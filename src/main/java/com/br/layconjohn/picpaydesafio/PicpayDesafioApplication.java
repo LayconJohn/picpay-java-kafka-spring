@@ -1,4 +1,4 @@
-package com.br.giulanabezerra.picpaydesafio;
+package com.br.layconjohn.picpaydesafio;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
