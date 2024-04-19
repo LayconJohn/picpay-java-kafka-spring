@@ -1,8 +1,54 @@
 package com.br.layconjohn.picpaydesafio.transaction;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.br.layconjohn.picpaydesafio.exception.InvalidTransactionException;
+import com.br.layconjohn.picpaydesafio.wallet.Wallet;
+import com.br.layconjohn.picpaydesafio.wallet.WalletRepository;
+import com.br.layconjohn.picpaydesafio.wallet.WalletType;
 
 @Service
 public class TransactionService {
-    
+    private final TransactionRepository transactionRepository;
+    private final WalletRepository walletRepository;
+    private final AuthorizeService authorizeService;
+
+    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository, AuthorizeService authorizeService) {
+        this.transactionRepository = transactionRepository;
+        this.walletRepository = walletRepository;
+        this.authorizeService = authorizeService;
+    }
+
+    @Transactional
+    public Transaction create(Transaction transaction) {
+        //Validar
+        this.validate(transaction);
+
+        //Criar transaction
+        var newTransaction = this.transactionRepository.save(transaction);
+
+        //debitar na wallet
+        var wallet = this.walletRepository.findById(newTransaction.payer()).get();
+        this.walletRepository.save(wallet.debit(transaction.value()));
+
+        //chamar serviço de autorização
+        this.authorizeService.authorize();
+        return newTransaction;
+    }
+
+    private boolean isTransactionValid(Transaction transaction, Wallet payer) {
+        return payer.type() == WalletType.COMUM.getValue() && 
+        payer.balance().compareTo(transaction.value()) >= 0 &&
+        !payer.id().equals(transaction.payee());
+    }
+
+    private void validate(Transaction transaction) {
+        this.walletRepository.findById(transaction.payee())
+        .map(payee -> this.walletRepository.findById(transaction.payer())
+            .map(payer -> this.isTransactionValid(transaction, payer) ? true :  null)
+            .orElseThrow(() -> new InvalidTransactionException("Invalid Transaction - %s".formatted(transaction))))
+        .orElseThrow(() -> new InvalidTransactionException("Invalid Transaction - %s".formatted(transaction)));
+                
+    }
 }

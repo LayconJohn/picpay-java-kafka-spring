@@ -3,7 +3,6 @@ package com.br.layconjohn.picpaydesafio.wallet;
 import java.math.BigDecimal;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
 
 public record Wallet(
     @Id Long id,
@@ -14,5 +13,7 @@ public record Wallet(
     int type,
     BigDecimal balance
 ) {
-    
+    public Wallet debit(BigDecimal value) {
+        return new Wallet(this.id, this.fullname, this.cpf, this.email, this.password, this.type, this.balance.subtract(value));
+    }
 }
