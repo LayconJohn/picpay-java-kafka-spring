@@ -7,17 +7,18 @@ import com.br.layconjohn.picpaydesafio.exception.InvalidTransactionException;
 import com.br.layconjohn.picpaydesafio.wallet.Wallet;
 import com.br.layconjohn.picpaydesafio.wallet.WalletRepository;
 import com.br.layconjohn.picpaydesafio.wallet.WalletType;
+import com.br.layconjohn.picpaydesafio.authorization.AuthorizerService;
 
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final WalletRepository walletRepository;
-    private final AuthorizeService authorizeService;
+    private final AuthorizerService authorizerService;
 
-    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository, AuthorizeService authorizeService) {
+    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository, AuthorizerService authorizerService) {
         this.transactionRepository = transactionRepository;
         this.walletRepository = walletRepository;
-        this.authorizeService = authorizeService;
+        this.authorizerService = authorizerService;
     }
 
     @Transactional
@@ -33,7 +34,7 @@ public class TransactionService {
         this.walletRepository.save(wallet.debit(transaction.value()));
 
         //chamar serviço de autorização
-        this.authorizeService.authorize();
+        this.authorizerService.authorize();
         return newTransaction;
     }
 
