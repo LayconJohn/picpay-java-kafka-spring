@@ -2,8 +2,6 @@ package com.br.layconjohn.picpaydesafio.authorization;
 
 import org.springframework.web.client.RestClient;
 
-import com.br.layconjohn.picpaydesafio.exception.UnauthorizedTransactionException;
-
 public class AuthorizerService {
     private RestClient restClient;
 

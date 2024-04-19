@@ -1,4 +1,4 @@
-package com.br.layconjohn.picpaydesafio.exception;
+package com.br.layconjohn.picpaydesafio.authorization;
 
 public class UnauthorizedTransactionException extends RuntimeException{
     public UnauthorizedTransactionException(String message) {

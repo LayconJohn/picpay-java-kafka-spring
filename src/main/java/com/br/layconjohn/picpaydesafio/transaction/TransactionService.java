@@ -3,7 +3,6 @@ package com.br.layconjohn.picpaydesafio.transaction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.br.layconjohn.picpaydesafio.exception.InvalidTransactionException;
 import com.br.layconjohn.picpaydesafio.wallet.Wallet;
 import com.br.layconjohn.picpaydesafio.wallet.WalletRepository;
 import com.br.layconjohn.picpaydesafio.wallet.WalletType;
