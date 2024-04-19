@@ -40,7 +40,7 @@ public class TransactionService {
         this.walletRepository.save(walletPayee.credit(transaction.value()));
 
         //chamar serviço de autorização
-        this.authorizerService.authorize();
+        this.authorizerService.authorize(transaction);
 
         //notificationService
         this.notificationService.notify(transaction);

@@ -1,8 +1,14 @@
 package com.br.layconjohn.picpaydesafio.authorization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestClient;
 
+import com.br.layconjohn.picpaydesafio.transaction.Transaction;
+
 public class AuthorizerService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizerService.class);
+
     private RestClient restClient;
 
     public AuthorizerService(RestClient.Builder builder) {
@@ -12,7 +18,8 @@ public class AuthorizerService {
     }
 
 
-    public void authorize() {
+    public void authorize(Transaction transaction) {
+        LOGGER.info("Authorizing transaction: {}", transaction);
         var response = this.restClient.get()
         .retrieve()
         .toEntity(Authorization.class);
@@ -20,6 +27,8 @@ public class AuthorizerService {
         if(response.getStatusCode().isError() || !response.getBody().isAuthorized()) {
             throw new UnauthorizedTransactionException("Unauthorized Transaction");
         }
+
+        LOGGER.info("Transaction authorized: {}", transaction);
     }
 
 }
