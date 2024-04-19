@@ -1,6 +1,6 @@
 package com.br.layconjohn.picpaydesafio.transaction;
 
-
+import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,5 +22,8 @@ public class TransactionController {
         return this.transactionService.create(transaction);
     }
 
-
+    @GetMapping
+    public List<Transaction> list() {
+        return this.transactionService.list(); 
+    }
 }

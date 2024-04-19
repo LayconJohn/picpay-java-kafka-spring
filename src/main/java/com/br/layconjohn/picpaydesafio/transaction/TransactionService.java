@@ -1,5 +1,7 @@
 package com.br.layconjohn.picpaydesafio.transaction;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,5 +59,9 @@ public class TransactionService {
             .orElseThrow(() -> new InvalidTransactionException("Invalid Transaction - %s".formatted(transaction))))
         .orElseThrow(() -> new InvalidTransactionException("Invalid Transaction - %s".formatted(transaction)));
                 
+    }
+
+    public List<Transaction> list() {
+        return this.transactionRepository.findAll();
     }
 }
