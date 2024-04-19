@@ -33,9 +33,11 @@ public class TransactionService {
         //Criar transaction
         var newTransaction = this.transactionRepository.save(transaction);
 
-        //debitar na wallet
-        var wallet = this.walletRepository.findById(newTransaction.payer()).get();
-        this.walletRepository.save(wallet.debit(transaction.value()));
+        //debitar na wallet Payer e creditar na wallet payee
+        var walletPayer = this.walletRepository.findById(newTransaction.payer()).get();
+        var walletPayee =  this.walletRepository.findById(newTransaction.payee()).get();
+        this.walletRepository.save(walletPayer.debit(transaction.value()));
+        this.walletRepository.save(walletPayee.credit(transaction.value()));
 
         //chamar serviço de autorização
         this.authorizerService.authorize();
