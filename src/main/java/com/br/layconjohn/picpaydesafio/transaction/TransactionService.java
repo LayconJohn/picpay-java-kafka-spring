@@ -7,17 +7,20 @@ import com.br.layconjohn.picpaydesafio.wallet.Wallet;
 import com.br.layconjohn.picpaydesafio.wallet.WalletRepository;
 import com.br.layconjohn.picpaydesafio.wallet.WalletType;
 import com.br.layconjohn.picpaydesafio.authorization.AuthorizerService;
+import com.br.layconjohn.picpaydesafio.notification.NotificationService;
 
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final WalletRepository walletRepository;
     private final AuthorizerService authorizerService;
+    private final NotificationService notificationService;
 
-    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository, AuthorizerService authorizerService) {
+    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository, AuthorizerService authorizerService, NotificationService notificationService) {
         this.transactionRepository = transactionRepository;
         this.walletRepository = walletRepository;
         this.authorizerService = authorizerService;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -34,6 +37,10 @@ public class TransactionService {
 
         //chamar serviço de autorização
         this.authorizerService.authorize();
+
+        //notificationService
+        this.notificationService.notify(transaction);
+
         return newTransaction;
     }
 
